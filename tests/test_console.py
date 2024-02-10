@@ -6,10 +6,10 @@ Unittest classes:
     TestHBNBCommand_help
     TestHBNBCommand_exit
     TestHBNBCommand_create
-    TestHBNBCommand_show
     TestHBNBCommand_all
     TestHBNBCommand_destroy
     TestHBNBCommand_update
+    TestHBNBCommand_show
 """
 import os
 import sys
