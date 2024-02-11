@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Place module: defines the place class that inherits from BaseModel.
+Place module: defines The place class that inherits from BaseModel.
 """
 from models.base_model import BaseModel
 
