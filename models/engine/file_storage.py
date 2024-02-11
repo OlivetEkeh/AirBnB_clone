@@ -1,21 +1,21 @@
 #!/usr/bin/python3
 """
-This module would defines the FileStorage
+This module defines the FileStorage
 """
 
 import json
 from models.base_model import BaseModel
 from models.user import User
-from models.place import Place
 from models.state import State
 from models.city import City
-from models.review import Review
 from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class FileStorage:
     """
-    This is a class for managing storage of instances
+    Class for managing storage of instances
     """
     __file_path = "file.json"
     __objects = {}
@@ -28,14 +28,14 @@ class FileStorage:
 
     def new(self, obj):
         """
-        This adds a new object instance to the storage.
+        Adds a new object instance to the storage.
         """
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
         self.__objects[key] = obj
 
     def save(self):
         """
-        This Serializes the stored objects to a JSON file
+        Serializes the stored objects to a JSON file
         """
         obj_dict = {}
         for obj in self.__objects:
@@ -45,7 +45,7 @@ class FileStorage:
 
     def reload(self):
         """
-        This Deserializes objects from the JSON file back into the storage
+        Deserializes objects from the JSON file back into the storage
         """
         try:
             with open(self.__file_path, 'r') as file:
