@@ -9,7 +9,7 @@ and cases on which it is expected to fail.
 """
 
 from datetime import datetime
-from models.base_model import BaseModel
+from models import BaseModel
 import os
 import pep8
 import unittest
@@ -239,4 +239,4 @@ class TestBaseModel(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main())
