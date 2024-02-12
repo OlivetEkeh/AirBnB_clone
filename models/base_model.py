@@ -48,5 +48,9 @@ class BaseModel:
         Updates the public instance attribute updated_at with the current time
         """
         self.updated_at = datetime.now()
-        models.storage.new(self)
-        models.storage.save()
+        # Ensure models.storage is accessible
+        if hasattr(models, 'storage') and hasattr(models.storage, 'new'):
+            models.storage.new(self)
+            models.storage.save()
+        else:
+            print("Warning: models.storage is not accessible.")

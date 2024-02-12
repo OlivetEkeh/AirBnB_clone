@@ -38,8 +38,8 @@ class FileStorage:
         Serializes the stored objects to a JSON file
         """
         obj_dict = {}
-        for obj in self.__objects:
-            obj_dict[obj] = self.__objects[obj].to_dict()
+        for key, value in self.__objects.items():
+            obj_dict[key] = value.to_dict()
         with open(self.__file_path, mode="w") as file:
             json.dump(obj_dict, file)
 
@@ -52,7 +52,21 @@ class FileStorage:
                 obj_dict = json.load(file)
                 for key, value in obj_dict.items():
                     class_name, obj_id = key.split('.')
-                    obj_instance = eval(class_name)(**value)
-                    self.__objects[key] = obj_instance
+                    # Using dict to map class names to their corresponding classes
+                    class_map = {
+                        'BaseModel': BaseModel,
+                        'User': User,
+                        'State': State,
+                        'City': City,
+                        'Amenity': Amenity,
+                        'Place': Place,
+                        'Review': Review
+                    }
+                    # Instantiate the class using the class map
+                    if class_name in class_map:
+                        obj_instance = class_map[class_name](**value)
+                        self.__objects[key] = obj_instance
+                    else:
+                        print("Unknown class:", class_name)
         except FileNotFoundError:
             pass
