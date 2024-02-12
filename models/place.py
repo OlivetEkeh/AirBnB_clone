@@ -1,14 +1,27 @@
 #!/usr/bin/python3
-"""
-Place module: defines The place class that inherits from BaseModel.
-"""
+
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
     """
-    Place class representing a place for accommodation.
+    The Place class inherits from BaseModel.
+
+    Public class attributes:
+    city_id: str - empty st: it will be the City.id
+    user_id: str - empty str: it will be the User.id
+    name: str - empty str
+    description: str - empty str
+    number_rooms: integer - 0
+    number_bathrooms: integer - 0
+    maximum_guest: integer - 0
+    price_by_night: integer - 0
+    latitude: float - 0.0
+    longitude: float - 0.0
+    amenity_ids: list of str - empty list:11
+    this will be the list of the Amenity.id later
     """
+
     city_id = ""
     user_id = ""
     name = ""
@@ -20,3 +33,4 @@ class Place(BaseModel):
     latitude = 0.0
     longitude = 0.0
     amenity_ids = []
+    

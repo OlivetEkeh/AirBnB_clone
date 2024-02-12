@@ -1,72 +1,76 @@
 #!/usr/bin/python3
-"""
-This module defines the FileStorage
-"""
-
 import json
 from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
 
 
 class FileStorage:
     """
-    Class for managing storage of instances
+    This class provides methods for serializing instances to a JSON file
+    and deserializing a JSON file to instances.
+
+    Attributes:
+        __file_path (str): Path to the JSON file.
+        __objects (dict): Dictionary to store all objects by <class name>.id.
     """
     __file_path = "file.json"
     __objects = {}
 
+    @classmethod
+    def _import_all_model_classes(cls):
+        """
+        Dynamically import model classes.
+        """
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.place import Place
+        from models.amenity import Amenity
+        from models.review import Review
+
     def all(self):
         """
-        Returns the dictionary of all stored objects
+        Returns the dictionary of all objects.
+
+        Returns:
+            dict: Dictionary of all objects.
         """
-        return self.__objects
+        return FileStorage.__objects
 
     def new(self, obj):
         """
-        Adds a new object instance to the storage.
+        Adds a new object to the __objects dictionary.
+
+        Args:
+            obj (BaseModel): The object to be added.
         """
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        ocname = obj.__class__.__name__
+        FileStorage.__objects["{}.{}".format(ocname, obj.id)] = obj
 
     def save(self):
         """
-        Serializes the stored objects to a JSON file
+        Serializes __objects to the JSON file (__file_path).
         """
-        obj_dict = {}
-        for key, value in self.__objects.items():
-            obj_dict[key] = value.to_dict()
-        with open(self.__file_path, mode="w") as file:
+        ser_dict = FileStorage.__objects
+        obj_dict = {obj: ser_dict[obj].to_dict() for obj in ser_dict.keys()}
+        with open(FileStorage.__file_path, 'w') as file:
             json.dump(obj_dict, file)
 
     def reload(self):
+        """Deserializes the JSON file to __objects.
+        If the JSON file (__file_path) exists, loads the data and creates
+        instances of the corresponding classes. Otherwise, does nothing.
         """
-        Deserializes objects from the JSON file back into the storage
-        """
+        self._import_all_model_classes()
         try:
-            with open(self.__file_path, 'r') as file:
+            with open(FileStorage.__file_path) as file:
                 obj_dict = json.load(file)
-                for key, value in obj_dict.items():
-                    class_name, obj_id = key.split('.')
-                    # Using dict to map class names to their corresponding classes
-                    class_map = {
-                        'BaseModel': BaseModel,
-                        'User': User,
-                        'State': State,
-                        'City': City,
-                        'Amenity': Amenity,
-                        'Place': Place,
-                        'Review': Review
-                    }
-                    # Instantiate the class using the class map
-                    if class_name in class_map:
-                        obj_instance = class_map[class_name](**value)
-                        self.__objects[key] = obj_instance
-                    else:
-                        print("Unknown class:", class_name)
+                for obj_id, obj_data in obj_dict.items():
+                    class_name = obj_data["__class__"]
+                    del obj_data["__class__"]
+                    if class_name not in globals():
+                        self._import_all_model_classes()
+                    model_class = globals()[class_name]
+                    self.new(model_class(**obj_data))
         except FileNotFoundError:
-            pass
+            return
+          
